@@ -10,12 +10,19 @@
 	<body ng-app='angularApp' ng-controller="gameController"
 		ng-init="connect()">
 		<div class="container center-align-content full-scale">
-			<form id="registerForm">
-				<div class="form-group row">
-					<button type="button" class="btn btn-outline-primary"
-						ng-click="joinLobby()">Join</button>
+			<div class="card">
+				<div class="card-header">
+					<div class="card-title"><label class="text-center">Instructions</label></div>
 				</div>
-			</form>
+				<div class="card-body">
+					<form id="registerForm">
+						<div class="form-group center-align-content">
+							<button type="button" class="btn btn-outline-primary"
+								ng-click="joinLobby()">Join</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
@@ -23,3 +30,4 @@
 		const USERNAME = '${Username}';
 	</script>
 </html>
+				

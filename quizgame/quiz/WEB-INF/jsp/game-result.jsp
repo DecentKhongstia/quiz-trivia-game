@@ -9,7 +9,7 @@
 	</head>
 	<body ng-app='angularApp' ng-controller="resultController"
 		ng-init="connect()">
-		<div class="container center-align-content" style="display: block; margin-top: 20%">
+		<div class="container center-align-content mt-5" style="display: block;">
 			<div class="card">
 				<div class="card-body">
 					<form id="lobbyForm">

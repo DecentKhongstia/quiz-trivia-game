@@ -9,7 +9,7 @@
 		<script src="resources/scripts/controllers/registerController.js"></script>
 	</head>
 	<body ng-app='angularApp' ng-controller="registerController">
-		<div class="container center-align-content">
+		<div class="container center-align-content full-scale">
 			<div class="card">
 				<div class="card-header">
 					<h1>Register</h1>
@@ -27,6 +27,10 @@
 							<div class="col">
 								<input type="password" class="form-control" id="password" ng-model="user.password">
 							</div>
+						</div>
+						<div class="form-group row" ng-if="successMsg != null || errorMsg != null">
+							<label class="col" style="color:red" ng-if="errorMsg != null">{{errorMsg}}</label>
+							<label class="col" style="color:green" ng-if="serverMsg != null">{{serverMsg}}</label>
 						</div>
 						<div class="form-group left-align-content">
 							<button type="button" class="btn btn-outline-primary" ng-click="register();">Register</button>

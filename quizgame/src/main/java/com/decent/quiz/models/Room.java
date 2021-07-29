@@ -37,7 +37,7 @@ public class Room {
 	public void addUsers(UserInfo user) {
 		if (users == null || users.isEmpty() || users.size() < Constants.ROOMSIZE)
 			this.users.add(user);
-		if (users != null && !users.isEmpty() && users.size() > 1) {
+		if (users != null && !users.isEmpty() && users.size() > 1 && this.time == null) {
 			Calendar cal = Calendar.getInstance();
 		    Date date=cal.getTime();
 		    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");

@@ -18,6 +18,7 @@ angularApp.controller('lobbyController',["$scope", "$timeout", "$window", "AppSe
 	var timeToStart = null;
 	var interact = null;
 	var isJoinedLobby = null;
+	var countdownStarted = null;
 	
 	$scope.topic = '/user/'+lobbyID+'/queue/lobby-details'
 	
@@ -27,6 +28,7 @@ angularApp.controller('lobbyController',["$scope", "$timeout", "$window", "AppSe
 
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
+            localStorage.setItem("countdownStarted", 0);
             $scope.setConnected(true);
             stompClient.subscribe(topicGetLobbyID, function(messageOutput) {
 				lobbyID = messageOutput.body;
@@ -53,7 +55,6 @@ angularApp.controller('lobbyController',["$scope", "$timeout", "$window", "AppSe
 			if(isJoinedLobby == null && lobbyID != null){
 				localStorage.setItem("isJoinedLobby",true);
 				$scope.user.lobbyID = lobbyID;
-				
 				topicJoinLobby = '/user/'+lobbyID+'/queue/lobby-details';
 				stompClient.subscribe(topicJoinLobby, function(messageOutput) {
 					var room = angular.fromJson(messageOutput.body);
@@ -78,26 +79,30 @@ angularApp.controller('lobbyController',["$scope", "$timeout", "$window", "AppSe
 	};
 
 	$scope.startCountdown = () => {
-		if(timeToStart != null && timeToStart < LOBBY_WAITINGTIME){
-			let t = timeToStart;
-			$scope.remainningtime = LOBBY_WAITINGTIME - t;
-			var startCountdown = setInterval(() => {
-				if($scope.remainningtime <= 0){
-					clearInterval(startCountdown);
-					$window.location.href = URL_QUESTION_SCREEN;
-				}
-				if($scope.remainningtime == 0){
-					console.log(`Game will start in now`);
-				} else{
-					/*console.log(`Game will start in ${$scope.remainningtime} seconds..`);*/
-				}
-				$timeout(() => {
-					$scope.remainningtime--;
-				},0);
-				
-			}, 1000);
-		} else
-			$window.location.href = URL_QUESTION_SCREEN;
+		countdownStarted = localStorage.getItem("countdownStarted");
+		if(countdownStarted == 0){
+			localStorage.setItem("countdownStarted", 1);
+			if(timeToStart != null && timeToStart < LOBBY_WAITINGTIME){
+				let t = timeToStart;
+				$scope.remainningtime = LOBBY_WAITINGTIME - t;
+				var startCountdown = setInterval(() => {
+					if($scope.remainningtime <= 0){
+						clearInterval(startCountdown);
+						$window.location.href = URL_QUESTION_SCREEN;
+					}
+					if($scope.remainningtime == 0){
+						console.log(`Game will start in now`);
+					} else{
+						/*console.log(`Game will start in ${$scope.remainningtime} seconds..`);*/
+					}
+					$timeout(() => {
+						$scope.remainningtime--;
+					},0);
+					
+				}, 1000);
+			} else
+				$window.location.href = URL_QUESTION_SCREEN;
+		}
 	}
 	
 	/*$scope.displayResult = () => {

@@ -11,7 +11,7 @@ const URL_QUESTION_SCREEN = "game-question";
 const URL_RESULT_SCREEN = "game-result";
 const URL_END_SCREEN = "game-end";
 
-const LOBBY_WAITINGTIME = 10;
+const LOBBY_WAITINGTIME = 60;
 const QUESTIONS_WAITINGTIME = 10;
 const NO_OF_QUESTIONS = 3;
 const POINT_PER_QUESTION = 10;

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.decent.quiz.Constants;
 import com.decent.quiz.controllers.ChatController;
 import com.decent.quiz.daos.MainDao;
 import com.decent.quiz.models.MCQs;
@@ -111,11 +112,11 @@ public class MainService {
 
 			if (!isUserAdded(user.getUsername())) {
 				hasVacant = ChatController.rooms.stream()
-						.anyMatch(u -> u.getUsers() != null && !u.getUsers().isEmpty() && u.getUsers().size() < 2);
+						.anyMatch(u -> u.getUsers() != null && !u.getUsers().isEmpty() && u.getUsers().size() < Constants.ROOMSIZE);
 
 				if (hasVacant)
 					ChatController.rooms.stream()
-							.filter(u -> u.getUsers() != null && !u.getUsers().isEmpty() && u.getUsers().size() < 2)
+							.filter(u -> u.getUsers() != null && !u.getUsers().isEmpty() && u.getUsers().size() < Constants.ROOMSIZE)
 							.forEach(u -> {
 								u.addUsers(user);
 							});

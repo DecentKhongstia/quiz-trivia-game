@@ -10,7 +10,7 @@ public class Constants {
     public static final String USER_UUID = "UUID";
     public static final String USERNAME = "Username";
     
-    public static final Integer ROOMSIZE = 2;
+    public static final Integer ROOMSIZE = 10;
     public static final Integer NOOFQUESTIONS = 3;
     
 }

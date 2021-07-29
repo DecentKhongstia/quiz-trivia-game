@@ -15,12 +15,12 @@ angularApp.controller('questionController',["$scope", "$timeout", "$window", "Ap
 	};
 	
 	$scope.Answers = [];
+	$scope.timer = QUESTIONS_WAITINGTIME;
 	var count = 0;
 	var lobbyID = localStorage.getItem("lobbyID");
 	var sequenceId = null;
 	var topicGetQuestion = null;
 	var topicAnswer = null;
-	var timer = QUESTIONS_WAITINGTIME;
 	var started = localStorage.getItem("started");
 	$scope.user.lobbyID = lobbyID;
 	$scope.user.uuid = UUID; 
@@ -79,21 +79,21 @@ angularApp.controller('questionController',["$scope", "$timeout", "$window", "Ap
 			let len = $scope.Questions.length;
 			let code = $scope.Questions[len-1].code;
 			startTimer = setTimeout($scope.startCountdown, 1000);
-			if(timer < 0){
+			if($scope.timer < 0){
 				$timeout(() => {
 					$scope.Questions[len-1].display = true;
 					count++;
-					timer = QUESTIONS_WAITINGTIME;
+					$scope.timer = QUESTIONS_WAITINGTIME;
 				}, 300)
 				$scope.getQuestion(code);
-			}else if(timer >= 0){
-				console.log(`Next question in ${timer} seconds`);
+			}else if($scope.timer >= 0){
+				/*console.log(`Next question in ${$scope.timer} seconds`);*/
 			}
 			if(count >= NO_OF_QUESTIONS){
 				clearTimeout(startTimer);
 				$scope.displayResult();
 			}
-			timer--;
+			$scope.timer--;
 		}, 0)
 	}
 	
