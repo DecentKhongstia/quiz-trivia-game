@@ -16,6 +16,7 @@
 <script src="resources/scripts/app.js"></script>
 <script src="resources/scripts/models/App.js"></script>
 <script src="resources/scripts/services/AppService.js"></script>
-<script src="resources/scripts/services/SocketService.js"></script>
+<script src="resources/scripts/utils/patterns.js"></script>
+<script src="resources/scripts/utils/ngdirectives.js"></script>
 
 

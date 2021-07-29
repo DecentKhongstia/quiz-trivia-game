@@ -33,7 +33,7 @@ public class MainController {
 	private static final Logger LOG = Logger.getLogger(MainController.class.getName());
 
 	private @Autowired MainService MS;
-
+	
 	public static HttpSession session() {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		return attr.getRequest().getSession(true);
@@ -44,81 +44,89 @@ public class MainController {
 		model.addAttribute(Constants.USER_UUID, user.getUuid());
 		model.addAttribute(Constants.USERNAME, user.getUsername());
 	}
-
+	
+	/* PAGE */
 	@RequestMapping(value = { "/", "/index.htm" })
 	public String index() {
 		LOG.info("INDEX");
 		return "index";
 	}
 
-	@GetMapping(value = "/login")
-	public String loginScreen(ModelMap model, SessionStatus sessionStatus) {
-		MS.removeUser((UserInfo) session().getAttribute(Constants.SESSION_USER));
-		sessionStatus.setComplete();
-		session().invalidate();
-		return "login";
-	}
-
-	@GetMapping(value = "/register")
-	public String registerScreen() {
-		return "register";
-	}
-
-	@GetMapping(value = "/join-game-screen")
-	public String gameJoinScreen(ModelMap model) {
-		UserInfo user = (UserInfo) session().getAttribute(Constants.SESSION_USER);
-		LOG.info("MS.isUserLogin(user): " + MS.isUserLogin(user));
-		if (MS.isUserLogin(user)) {
-			return "game-screen";
-		} else
-			return "redirect:login";
-	}
-
-	@GetMapping(value = "/game-end")
+	@GetMapping(value = Constants.PATH_END_SCREEN)
 	public String gameExitScreen(ModelMap model) {
 		UserInfo user = (UserInfo) session().getAttribute(Constants.SESSION_USER);
-		LOG.info("MS.isUserLogin(user): " + MS.isUserLogin(user));
 		if (MS.isUserLogin(user)) {
 			MS.removeUser((UserInfo) session().getAttribute(Constants.SESSION_USER));
-			return "game-end";
+			return Constants.PATH_END_SCREEN;
 		} else
-			return "redirect:login";
+			return Constants.PATH_REDIRECT_SCREEN;
 	}
 
-	@GetMapping(value = "/game-lobby")
-	public String gameLobbyScreen(ModelMap model) {
-		LOG.info("GamelobbyScreen");
+	@GetMapping(value = Constants.PATH_GAME_SCREEN)
+	public String gameJoinScreen(ModelMap model) {
 		UserInfo user = (UserInfo) session().getAttribute(Constants.SESSION_USER);
 		if (MS.isUserLogin(user)) {
-			return "game-lobby";
+			MS.removeUser(user);
+			return Constants.PATH_GAME_SCREEN;
 		} else
-			return "redirect:login";
+			return Constants.PATH_REDIRECT_SCREEN;
 	}
 
-	@GetMapping(value = "/game-question")
+	@GetMapping(value = Constants.PATH_QUESTION_SCREEN)
 	public String gameQuestionScreen(ModelMap model) {
 		LOG.info("GameQuestionScreen");
 		UserInfo user = (UserInfo) session().getAttribute(Constants.SESSION_USER);
 		if (MS.isUserLogin(user)) {
 			if (ChatController.rooms != null && !ChatController.rooms.isEmpty()) {
 			}
-			return "game-question";
+			return Constants.PATH_QUESTION_SCREEN;
 		} else
-			return "redirect:login";
+			return Constants.PATH_REDIRECT_SCREEN;
 	}
 
-	@GetMapping(value = "/game-result")
+	@GetMapping(value = Constants.PATH_LOGIN_SCREEN)
+	public String loginScreen(ModelMap model, SessionStatus sessionStatus) {
+		MS.removeUser((UserInfo) session().getAttribute(Constants.SESSION_USER));
+		sessionStatus.setComplete();
+		session().invalidate();
+		return Constants.PATH_LOGIN_SCREEN;
+	}
+
+	@GetMapping(value = Constants.PATH_LOBBY_SCREEN)
+	public String gameLobbyScreen(ModelMap model) {
+		LOG.info("GamelobbyScreen");
+		UserInfo user = (UserInfo) session().getAttribute(Constants.SESSION_USER);
+		if (MS.isUserLogin(user)) {
+			return Constants.PATH_LOBBY_SCREEN;
+		} else
+			return Constants.PATH_REDIRECT_SCREEN;
+	}
+
+	@GetMapping(value = Constants.PATH_REGISTER_SCREEN)
+	public String registerScreen() {
+		return Constants.PATH_REGISTER_SCREEN;
+	}
+
+	@GetMapping(value = Constants.PATH_RESULT_SCREEN)
 	public String gameResultScreen(ModelMap model) {
 		LOG.info("GameResultScreen");
 		UserInfo user = (UserInfo) session().getAttribute(Constants.SESSION_USER);
 		if (MS.isUserLogin(user)) {
 			MS.removeUser(user);
-			return "game-result";
+			return Constants.PATH_RESULT_SCREEN;
 		} else
-			return "redirect:login";
+			return Constants.PATH_REDIRECT_SCREEN;
 	}
 
-	@PostMapping("login")
+	/* ACTION */
+	@GetMapping(value = Constants.GET_GETWINNER)
+	public ResponseEntity<HashMap<String, Object>> gameWinner(ModelMap model, @PathVariable String lobbyID) {
+		HashMap<String, Object> response = new HashMap<String, Object>();
+		MS.getResultWinner(lobbyID, response);
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping(value = Constants.POST_LOGIN)
 	@ResponseBody
 	public ResponseEntity<HashMap<String, Object>> login(ModelMap model, @RequestBody UserInfo user) {
 		HashMap<String, Object> response = new HashMap<String, Object>();
@@ -129,7 +137,7 @@ public class MainController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("register")
+	@PostMapping(value = Constants.POST_REGISTER)
 	@ResponseBody
 	public ResponseEntity<HashMap<String, Object>> register(ModelMap model, @RequestBody UserInfo user) {
 		HashMap<String, Object> response = new HashMap<String, Object>();
@@ -139,7 +147,7 @@ public class MainController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("save-result")
+	@PostMapping(value = Constants.POST_SAVERESULT)
 	@ResponseBody
 	public ResponseEntity<HashMap<String, Object>> saveResult(ModelMap model, @RequestBody Result result) {
 		HashMap<String, Object> response = new HashMap<String, Object>();
@@ -150,7 +158,7 @@ public class MainController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	}
 
-	@PostMapping("get-answers")
+	@PostMapping(value = Constants.POST_GETANSWERS)
 	@ResponseBody
 	public ResponseEntity<HashMap<String, Object>> getResultAnswers(ModelMap model, @RequestBody Result result) {
 		HashMap<String, Object> response = new HashMap<String, Object>();
@@ -158,12 +166,6 @@ public class MainController {
 		return ResponseEntity.ok(response);
 	}
 	
-	@GetMapping(value = "get-winner/{lobbyID}")
-	public ResponseEntity<HashMap<String, Object>> gameWinner(ModelMap model, @PathVariable String lobbyID) {
-		HashMap<String, Object> response = new HashMap<String, Object>();
-		MS.getResultWinner(lobbyID, response);
-		return ResponseEntity.ok(response);
-	}
 
 
 }

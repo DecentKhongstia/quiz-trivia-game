@@ -1,41 +1,62 @@
 @import url('https://fonts.googleapis.com/css?family=Poiret+One');
 
 html, body, main {
-  padding: 0;
-  margin: 0;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  /* color: white; */
-  font-family: 'Poiret One', sans-serif;
-  opacity:.95;
-  /* background-color: black; */
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	/* color: white; */
+	font-family: 'Poiret One', sans-serif;
+	opacity: .95;
+	/* background-color: black; */
 }
 
 .center-align-content {
 	display: flex;
 	align-items: center;
-	justify-content:center;
-	margin:auto;
+	justify-content: center;
+	margin: auto;
 }
 
+.full-scale {
+	height: 100vh;
+	width: 100%;
+}
+
+.full-scale-width-80 {
+	height: 100vh;
+	width: 80%;
+}
+
+.full-scale-width-60 {
+	height: 100vh;
+	width: 60%;
+}
+
+.full-scale-width-50 {
+	height: 100vh;
+	width: 50%;
+}
+
+.full-scale-width-30 {
+	height: 100vh;
+	width: 30%;
+}
 .left-align-content {
 	display: flex;
 	align-items: center;
-	justify-content:start;
-	margin:auto;
+	justify-content: start;
+	margin: auto;
 }
+
+.margin-top {
+	margin-top: 20%;
+}
+
 .right-align-content {
 	display: flex;
 	align-items: center;
-	justify-content:flex-end;
-	margin:auto;
-}
-
-.full-scale{
-	height: 100vh;
-	width: 100vh;
-}
-.margin-top{
-	margin-top: 20%;
+	justify-content: flex-end;
+	margin: auto;
 }

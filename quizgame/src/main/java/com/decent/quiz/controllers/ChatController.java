@@ -31,7 +31,7 @@ import com.decent.quiz.services.MainService;
 @Controller
 public class ChatController {
 
-	private static final Logger LOG = Logger.getLogger(WebSocketController.class.getName());
+	private static final Logger LOG = Logger.getLogger(ChatController.class.getName());
 
 	public static HashMap<String, String> sessions = new HashMap<String, String>();
 
@@ -76,13 +76,12 @@ public class ChatController {
 
 			simpMessageSendingOperations.convertAndSendToUser(to, "/queue/reply", out);
 
-			sha.getSessionAttributes().entrySet().forEach(System.out::println);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@MessageMapping("/get-lobbyID")
+	@MessageMapping(value = Constants.PATH_FIND_LOBBY_MESSAGE)
 	public void getGameLobbyID(final @Payload Message message, SimpMessageHeaderAccessor sha,
 			@Header("simpSessionId") String sessionId) throws Exception {
 		try {
@@ -94,14 +93,14 @@ public class ChatController {
 			UserInfo user = (UserInfo) sha.getSessionAttributes().get(Constants.SESSION_USER);
 			MS.addUser(user);
 			lobbyID = MS.getUserGameLobbyID(user.getUsername());
-			simpMessageSendingOperations.convertAndSendToUser(message.getFrom(), "/queue/lobbyID", lobbyID);
+			simpMessageSendingOperations.convertAndSendToUser(message.getFrom(), Constants.DESTINATION_LOBBY_ID, lobbyID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	@MessageMapping("/join-lobby")
+	@MessageMapping(value = Constants.PATH_JOIN_LOBBY_MESSAGE)
 	public void joinGameLobby(final @Payload UserInfo user, SimpMessageHeaderAccessor sha,
 			@Header("simpSessionId") String sessionId) throws Exception {
 		try {
@@ -116,14 +115,14 @@ public class ChatController {
 			JSONObject out = new JSONObject();
 			out.put("time", room.getTime());
 			out.put("users", room.getUsers());
-			simpMessageSendingOperations.convertAndSendToUser(lobbyID, "/queue/lobby-details", out);
+			simpMessageSendingOperations.convertAndSendToUser(lobbyID, Constants.DESTINATION_LOBBY_DETAILS, out);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@MessageMapping("get-question")
+	@MessageMapping(value = Constants.PATH_GET_QUESTION_MESSAGE)
 	public void getQuestion(final @Payload Question question, SimpMessageHeaderAccessor sha,
 			@Header("simpSessionId") String sessionId) throws Exception {
 		try {
@@ -144,13 +143,14 @@ public class ChatController {
 				}
 				lobbyQuestionCode.get(question.getLobbyID()).add(qs.getCode());
 			}
-			simpMessageSendingOperations.convertAndSendToUser(question.getUuid(), "/queue/lobby-questions", qs);
+			MS.startGame(question.getLobbyID());
+			simpMessageSendingOperations.convertAndSendToUser(question.getUuid(), Constants.DESTINATION_LOBBY_QUESTIONS, qs);
 		} catch (Exception e) {
 
 		}
 	}
 
-	@MessageMapping("get-answer")
+	@MessageMapping(value = Constants.PATH_GET_ANSWER_MESSAGE)
 	public void getAnswer(final @Payload Answer answer, SimpMessageHeaderAccessor sha,
 			@Header("simpSessionId") String sessionId) throws Exception {
 		LOG.info("ChatController.getAnswer()");
@@ -161,7 +161,7 @@ public class ChatController {
 				}
 				if (!lobbyAnswers.containsKey(answer.getLobbyID())) {
 					lobbyAnswers.get(answer.getLobbyID()).add(answer);
-					simpMessageSendingOperations.convertAndSendToUser(answer.getLobbyID(), "/queue/lobby-answers",
+					simpMessageSendingOperations.convertAndSendToUser(answer.getLobbyID(), Constants.DESTINATION_LOBBY_ANSWERS,
 							lobbyAnswers.get(answer.getLobbyID()));
 				}
 			}

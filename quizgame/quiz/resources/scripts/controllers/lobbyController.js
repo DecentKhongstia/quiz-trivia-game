@@ -41,12 +41,6 @@ angularApp.controller('lobbyController',["$scope", "$timeout", "$window", "AppSe
         
 	}
 	
-	$scope.setConnected= (flag) => {
-		if(flag){
-			stompClient.send(GETLOBBYID, {}, JSON.stringify({'from':UUID, 'text':'', 'to': ''}));
-		}
-	};
-	
 	$scope.joinLobby = () => {
 		try{
 			$scope.user.username = USERNAME;
@@ -77,7 +71,17 @@ angularApp.controller('lobbyController',["$scope", "$timeout", "$window", "AppSe
 			console.log(e);
 		}
 	};
+	
+	$scope.leaveLobby = () => {
+		AppService.leaveLobby();
+	}
 
+	$scope.setConnected= (flag) => {
+		if(flag){
+			stompClient.send(GETLOBBYID, {}, JSON.stringify({'from':UUID, 'text':'', 'to': ''}));
+		}
+	};
+	
 	$scope.startCountdown = () => {
 		countdownStarted = localStorage.getItem("countdownStarted");
 		if(countdownStarted == 0){
@@ -104,52 +108,4 @@ angularApp.controller('lobbyController',["$scope", "$timeout", "$window", "AppSe
 				$window.location.href = URL_QUESTION_SCREEN;
 		}
 	}
-	
-	/*$scope.displayResult = () => {
-		
-	};
-	
-	$scope.displayQuestions = () => {
-		console.log("displayQuestions");
-		let no = null;
-		$timeout(() => {
-			if($scope.Questions != null){
-				no = $scope.Questions.length;
-				$scope.Questions.forEach((o, x) => {
-					o.display = false
-				})
-				$scope.Questions[0].display = true;
-				$scope.nextQuestions(no);
-			}
-		}, 0);
-	}
-	
-	$scope.nextQuestions = (n) => {
-		let t = 10;
-		let i = 1;
-		var startCountdown = setInterval( () => {
-			
-			if(t == 0 && i<n){
-				$timeout( () => {
-					console.log("inside: i="+i);
-					$scope.Questions[i-1].display = false;
-					$scope.Questions[i].display = true;
-					i++;
-					if(i == n)
-						clearInterval(startCountdown);
-				}, 0)
-				console.log("Next question will appear now: ", $scope.Questions);
-			}else
-				console.log(`Next question will appear in ${t} seconds..`);
-			
-			if(t <= 0){
-				if($scope.Questions[(n-1)].display == true)
-					clearInterval(startCountdown);
-				else
-					t = 11;
-			}
-			t--;
-		}, 1000)
-	}*/
-	
 }]);

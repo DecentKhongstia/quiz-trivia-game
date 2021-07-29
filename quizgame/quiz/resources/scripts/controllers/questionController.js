@@ -133,9 +133,7 @@ angularApp.controller('questionController',["$scope", "$timeout", "$window", "Ap
 		}
 	};
 	
-	/*$scope.getAnswer = (code) => {
-		$scope.Answers = localStorage.getItem("Answers"); 
-		if($scope.Answers == null || $scope.Answers.length <= 0)
-			stompClient.send(GETQUESTION, {}, JSON.stringify({'code':code, 'lobbyID': lobbyID}));
-	}*/
+	$scope.leaveLobby = () => {
+		AppService.leaveLobby();
+	}
 }]);

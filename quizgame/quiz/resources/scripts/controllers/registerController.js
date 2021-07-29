@@ -12,7 +12,7 @@ angularApp.controller('registerController',["$scope", "$window", "AppService", f
 		AppService.post('register', angular.toJson($scope.user), (response) => {
 			console.log('response: ', response);
 			$scope.successMsg = response.data.msg;
-			$window.location.href = "join-game-screen";
+			$window.location.href = URL_GAME_SCREEN;
 		}, (error) => {
 			console.log('error: ', error);
 			$scope.errorMsg = error.data.msg;

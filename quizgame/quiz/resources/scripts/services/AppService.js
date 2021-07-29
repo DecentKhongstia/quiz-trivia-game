@@ -2,7 +2,7 @@
  * 
  */
 
-function AppService($http) {
+function AppService($http, $window) {
 
 	var app = this;
 	
@@ -25,6 +25,28 @@ function AppService($http) {
 			errCallBack(error);
 		});
 	};
+	
+	app.clearGameSession = () => {
+		sessionStorage.clear();
+		localStorage.clear();
+	}
+	
+	app.joinLobby = () => {
+		let flag = confirm("Press OK to PLAY\nElse Cancel");
+		if(flag)
+			$window.location.href = URL_LOBBY_SCREEN;
+	}
+	app.leaveLobby = () => {
+		let flag = confirm("Press OK to Leave.\nElse Cancel");
+		if(flag)
+			$window.location.href = URL_GAME_SCREEN;
+	}
+
+	app.exitGame = () => {
+		let flag = confirm("Press OK to Exit.\nElse Cancel");
+		if(flag)
+			$window.location.href = URL_LOGIN_SCREEN;
+	}
 	
 	app.getCurrentTime = () => {
 		var time = new Date();

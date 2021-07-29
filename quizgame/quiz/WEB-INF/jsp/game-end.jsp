@@ -17,7 +17,7 @@
 							The winner is {{winner}} with a score of {{max}} each.
 						</div>
 						<div class="form-group center-align-content">
-							<a href="join-game-screen"><button type="button" class="btn btn-outline-primary">New Game</button></a>
+							<a href="game-screen"><button type="button" class="btn btn-outline-primary">New Game</button></a>
 						</div>
 					</form>
 				</div>			

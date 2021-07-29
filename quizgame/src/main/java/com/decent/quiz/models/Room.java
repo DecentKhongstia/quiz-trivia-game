@@ -15,11 +15,13 @@ public class Room {
 
 	private String roomId;
 	private String time;
-	private ArrayList<MCQs> questions = new ArrayList<MCQs>(Constants.NOOFQUESTIONS);
-	private ArrayList<UserInfo> users = new ArrayList<UserInfo>(Constants.ROOMSIZE);
+	private boolean started;
+	private ArrayList<MCQs> questions = new ArrayList<MCQs>();
+	private ArrayList<UserInfo> users = new ArrayList<UserInfo>();
 
 	public Room() {
 		this.roomId = UUID.randomUUID().toString();
+		this.started = false;
 	}
 
 	public String getRoomId() {
@@ -30,26 +32,33 @@ public class Room {
 		return time;
 	}
 
+	public boolean isStarted() {
+		return started;
+	}
+
+	public void setStarted(boolean started) {
+		this.started = started;
+	}
+
 	public ArrayList<UserInfo> getUsers() {
 		return users;
 	}
 
 	public void addUsers(UserInfo user) {
-		if (users == null || users.isEmpty() || users.size() < Constants.ROOMSIZE)
+		if ((users == null || users.isEmpty() || users.size() < Constants.ROOMSIZE) && !this.started)
 			this.users.add(user);
 		if (users != null && !users.isEmpty() && users.size() > 1 && this.time == null) {
 			Calendar cal = Calendar.getInstance();
-		    Date date=cal.getTime();
-		    DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-		    this.time = dateFormat.format(date);			
+			Date date = cal.getTime();
+			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+			this.time = dateFormat.format(date);
 		}
 	}
 
-	
 	public ArrayList<MCQs> getQuestions() {
 		return questions;
 	}
-	
+
 	public void setQuestions(ArrayList<MCQs> questions) {
 		this.questions = questions;
 	}
@@ -68,10 +77,5 @@ public class Room {
 	public String toString() {
 		return "Room [roomId=" + roomId + ", time=" + time + ", questions=" + questions + ", users=" + users + "]";
 	}
-
-	/*
-	 * @Override public String toString() { return "Room [roomId= " + roomId +
-	 * " time= " + time + "getUsers()=" + getUsers().toString() + "]"; }
-	 */
 
 }

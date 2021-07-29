@@ -9,7 +9,7 @@
 </head>
 <body ng-app='angularApp' ng-controller="questionController"
 	ng-init="connect()">
-	<div class="container center-align-content margin-top">
+	<div class="container center-align-content full-scale-width-80">
 		<form id="registerForm">
 			<div class="form-group">
 				<h6>Next questions will appear in {{timer}} seconds</h6>
@@ -26,6 +26,10 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="form-group center-align-content">
+				<button type="button" class="btn btn-outline-primary"
+					ng-click="leaveLobby()">Leave</button>
 			</div>
 		</form>
 	</div>

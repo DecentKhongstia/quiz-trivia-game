@@ -24,8 +24,7 @@ public class MainService {
 	private static final Logger LOG = Logger.getLogger(MainService.class.getName());
 
 	private @Autowired MainDao MD;
-	private @Autowired ChatController CC;
-
+	
 	public boolean isRegistered(UserInfo user, HashMap<String, Object> response) {
 		boolean status = false;
 		status = MD.isExist(user, response);
@@ -106,18 +105,15 @@ public class MainService {
 
 	public void addUser(UserInfo user) {
 		LOG.info("ChatController.addUser()");
-		boolean isAdd = false, hasVacant = false;
+		boolean hasVacant = false;
 		if (ChatController.rooms != null && !ChatController.rooms.isEmpty()) {
-			ChatController.rooms.forEach(r -> LOG.info(r.toString()));
-
 			if (!isUserAdded(user.getUsername())) {
-				hasVacant = ChatController.rooms.stream()
-						.anyMatch(u -> u.getUsers() != null && !u.getUsers().isEmpty() && u.getUsers().size() < Constants.ROOMSIZE);
+				hasVacant = ChatController.rooms.stream().filter(r -> !r.isStarted()).anyMatch(u -> u.getUsers() != null
+						&& !u.getUsers().isEmpty() && u.getUsers().size() < Constants.ROOMSIZE);
 
 				if (hasVacant)
-					ChatController.rooms.stream()
-							.filter(u -> u.getUsers() != null && !u.getUsers().isEmpty() && u.getUsers().size() < Constants.ROOMSIZE)
-							.forEach(u -> {
+					ChatController.rooms.stream().filter(u -> u.getUsers() != null && !u.getUsers().isEmpty()
+							&& u.getUsers().size() < Constants.ROOMSIZE).forEach(u -> {
 								u.addUsers(user);
 							});
 
@@ -134,7 +130,6 @@ public class MainService {
 	public void removeUser(UserInfo user) {
 		LOG.info("ChatController.removeUser()");
 		if (user != null) {
-			ChatController.rooms.forEach(System.out::println);
 			if (ChatController.rooms != null && !ChatController.rooms.isEmpty()) {
 				ChatController.rooms.forEach(r -> {
 					if (r != null && r.getUsers() != null) {
@@ -187,4 +182,12 @@ public class MainService {
 		MD.getResultWinner(lobbyID, response);
 	}
 
+	public void startGame(String lobbyID) {
+		if (lobbyID != null && ChatController.rooms != null && !ChatController.rooms.isEmpty()) {
+			ChatController.rooms.stream().filter(r -> r.getRoomId().equalsIgnoreCase(lobbyID)).forEach(r -> {
+				if (!r.isStarted())
+					r.setStarted(true);
+			});
+		}
+	}
 }

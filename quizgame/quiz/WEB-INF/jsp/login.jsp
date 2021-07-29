@@ -3,10 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>Quiz- Login</title>
-<%@include file="common/headerfiles.jsp"%>
-<script src="resources/scripts/controllers/loginController.js"></script>
+	<meta charset="ISO-8859-1">
+	<title>Quiz- Login</title>
+	<%@include file="common/headerfiles.jsp"%>
+	<script src="resources/scripts/controllers/loginController.js"></script>
+	<script src="<c:url value="/resources/scripts/utils/sha256.min.js"/>"></script>
 </head>
 <body ng-app='angularApp' ng-controller="loginController">
 	<div class="container center-align-content full-scale">
@@ -20,7 +21,7 @@
 						<label for="username" class="col">Username</label>
 						<div class="col">
 							<input type="text" class="form-control" id="username"
-								ng-model="user.username">
+								ng-model="user.username" pattern-alpha-numeric>
 						</div>
 					</div>
 					<div class="form-group row">
