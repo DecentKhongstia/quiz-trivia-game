@@ -19,6 +19,15 @@ html, body, main {
 	margin: auto;
 }
 
+.error {
+	background-color: rgba(237, 20, 54, 0.4);
+	border: 1px solid rgba(237, 20, 54, 1);
+	border-radius: 0.5em;
+	color: red;
+	margin: 0.1em 1em;
+	opacity: 0.5;
+}
+
 .full-scale {
 	height: 100vh;
 	width: 100%;
