@@ -12,7 +12,7 @@
 	<div class="container center-align-content full-scale-width-80">
 		<form id="registerForm">
 			<div class="form-group">
-				<h6>Next questions will appear in {{timer}} seconds</h6>
+				<h6>Next questions will appear in {{timer >= 0?timer:''}} seconds</h6>
 			</div>
 			<div class="form-group row"
 				ng-repeat="Q in Questions | filter:{ display: false}">

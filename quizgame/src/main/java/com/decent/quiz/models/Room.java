@@ -16,7 +16,8 @@ public class Room {
 	private String roomId;
 	private String time;
 	private boolean started;
-	private ArrayList<MCQs> questions = new ArrayList<MCQs>();
+	private ArrayList<Question> questions = new ArrayList<Question>();
+//	private ArrayList<MCQs> questions = new ArrayList<MCQs>();
 	private ArrayList<UserInfo> users = new ArrayList<UserInfo>();
 
 	public Room() {
@@ -55,22 +56,35 @@ public class Room {
 		}
 	}
 
-	public ArrayList<MCQs> getQuestions() {
+	/*
+	 * public ArrayList<MCQs> getQuestions() { return questions; }
+	 * 
+	 * public void setQuestions(ArrayList<MCQs> questions) { this.questions =
+	 * questions; }
+	 * 
+	 * public void addQuestions(MCQs question) { if (this.questions != null &&
+	 * !this.questions.isEmpty()) { boolean exist = this.questions.stream()
+	 * .anyMatch(q -> q != null && q.getCode() != null && q.getCode() ==
+	 * question.getCode()); if (!exist) this.questions.add(question); } else
+	 * this.questions.add(question); }
+	 */
+
+	public ArrayList<Question> getQuestions() {
 		return questions;
 	}
 
-	public void setQuestions(ArrayList<MCQs> questions) {
+	public void setQuestions(ArrayList<Question> questions) {
 		this.questions = questions;
 	}
 
-	public void addQuestions(MCQs question) {
+	public void addQuestions(Question question) {
 		if (this.questions != null && !this.questions.isEmpty()) {
 			boolean exist = this.questions.stream()
 					.anyMatch(q -> q != null && q.getCode() != null && q.getCode() == question.getCode());
-			if (!exist)
-				this.questions.add(question);
-		} else
+			if(!exist) this.questions.add(question);
+		}else {
 			this.questions.add(question);
+		}
 	}
 
 	@Override

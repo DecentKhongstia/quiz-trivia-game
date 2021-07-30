@@ -1,5 +1,8 @@
 package com.decent.quiz.models;
 
+import lombok.ToString;
+
+@ToString
 public class Question {
 
 	private Integer code;
@@ -37,11 +40,6 @@ public class Question {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
-	}
-
-	@Override
-	public String toString() {
-		return "Question [code=" + code + ", lobbyID=" + lobbyID + "]";
 	}
 
 }

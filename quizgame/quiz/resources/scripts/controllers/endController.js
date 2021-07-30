@@ -19,7 +19,10 @@ angularApp.controller('endController',["$scope", "$timeout", "$window", "AppServ
 				winners.push(r.username);
 			}
 		});
-		
+		/*console.log(`$scope.Results.winner`,$scope.Results.winner);
+		$scope.Results.winner.sort((a, b) => {
+			return a.tally - b.tally;
+	    });*/
 		if(winners != null && winners.length > 0)
 			$scope.winner = winners.join(', ');	
 	})

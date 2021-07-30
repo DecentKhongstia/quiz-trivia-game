@@ -13,8 +13,9 @@
 			<div class="card">
 				<div class="card-body">
 					<form id="lobbyForm">
-						<div class="form-group center-align-content mb-5" ng-if="Results.result.username != null">
-							You score {{Results.result.tally}} out of {{total}}.
+						<div class="form-group mb-5 row" ng-if="Results.result.username != null">
+							<%-- <label class="col text-left">${Username}: </label> --%>
+							<label class="col text-center">You score {{Results.result.tally}} out of {{total}}.</label>
 						</div>
 						<div class="form-group row">
 							<label class="col-sm-1 text-float-right">Sl</label>

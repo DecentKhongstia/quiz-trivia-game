@@ -2,9 +2,9 @@ package com.decent.quiz.daos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -105,7 +104,42 @@ public class MainDao {
 		return status;
 	}
 
-	public MCQs getMCQs(HashSet<Integer> codes) {
+	public MCQs getMCQs(Integer code) {
+		MCQs qs = new MCQs();
+		try {
+			List<MCQs> questions = new ArrayList<MCQs>();
+			List<MCAs> answers = new ArrayList<MCAs>();
+
+			String sql = "";
+
+			Object[] args = new Object[] { code };
+
+			if (code != null) {
+				sql = "SELECT code, description FROM quiz.questions WHERE code = ?";
+				questions = jdbcTemplate.query(sql, args, BeanPropertyRowMapper.newInstance(MCQs.class));
+			} else {
+				sql = "SELECT code, description FROM quiz.questions";
+				questions = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(MCQs.class));
+			}
+			if (questions != null && !questions.isEmpty())
+				qs = questions.get(0);
+
+			if (qs != null && qs.getCode() != null) {
+				sql = "SELECT code, qcode, description, flag as options FROM quiz.answers WHERE qcode = ?";
+				args = new Object[] { qs.getCode() };
+				answers = jdbcTemplate.query(sql, args, BeanPropertyRowMapper.newInstance(MCAs.class));
+				if (answers != null && !answers.isEmpty())
+					qs.setAnswers(answers);
+			}
+			return qs;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return qs;
+	}
+
+	public MCQs getMCQs(Set<Integer> codes) {
 		LOG.info("getMCQs");
 
 		MCQs qs = new MCQs();
@@ -121,7 +155,6 @@ public class MainDao {
 			List<Object> params = new ArrayList<Object>();
 
 			if (codes != null && !codes.isEmpty()) {
-				sql = "SELECT code, description FROM quiz.questions WHERE code NOT IN (?)";
 				sql = "SELECT code, description FROM quiz.questions WHERE code NOT IN (";
 				for (Integer i : codes) {
 					sql = sql.concat("?,");
@@ -250,7 +283,7 @@ public class MainDao {
 					+ "	GROUP BY lobbyid  " + ")";
 
 			sql = "SELECT username, tally   " + "FROM quiz.gameanswers GA   " + "WHERE GA.lobbyid = ?  ";
-			
+
 			Object[] args = new Object[] { lobbyID };
 			responses = jdbcTemplate.query(sql, args, new BeanPropertyRowMapper(Winner.class));
 			json.put("winner", responses);

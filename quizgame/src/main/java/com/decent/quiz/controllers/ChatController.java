@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
@@ -36,9 +37,14 @@ public class ChatController {
 	public static HashMap<String, String> sessions = new HashMap<String, String>();
 
 	public static ArrayList<Room> rooms = new ArrayList<Room>();
-	public static HashMap<String, HashSet<Integer>> lobbyQuestionCode = new HashMap();
-	public static HashMap<String, HashSet<Answer>> lobbyAnswers = new HashMap();
-	public static HashMap<Integer, MCQs> lobbyQuestions = new HashMap();
+	/*
+	 * public static HashMap<String, HashSet<Integer>> lobbyQuestionCode = new
+	 * HashMap();
+	 */
+	/*
+	 * public static HashMap<String, HashSet<Answer>> lobbyAnswers = new HashMap();
+	 */
+	/* public static HashMap<Integer, MCQs> lobbyQuestions = new HashMap(); */
 
 	@Autowired
 	private MainService MS;
@@ -93,7 +99,8 @@ public class ChatController {
 			UserInfo user = (UserInfo) sha.getSessionAttributes().get(Constants.SESSION_USER);
 			MS.addUser(user);
 			lobbyID = MS.getUserGameLobbyID(user.getUsername());
-			simpMessageSendingOperations.convertAndSendToUser(message.getFrom(), Constants.DESTINATION_LOBBY_ID, lobbyID);
+			simpMessageSendingOperations.convertAndSendToUser(message.getFrom(), Constants.DESTINATION_LOBBY_ID,
+					lobbyID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -127,46 +134,42 @@ public class ChatController {
 			@Header("simpSessionId") String sessionId) throws Exception {
 		try {
 			LOG.info("ChatController.getQuestion()");
-			HashSet<Integer> questioncodes = MS.getAddedQuestionCode(question.getLobbyID());
-
+			LOG.info("Question: "+question);
 			MCQs qs = new MCQs();
-			if (!lobbyQuestionCode.containsKey(question.getLobbyID())) {
-				lobbyQuestionCode.put(question.getLobbyID(), new HashSet<Integer>());
-			}
-
-			if (lobbyQuestionCode.containsKey(question.getLobbyID())) {
+			if (MS.isExistQuestionSequenceId(question)) {
+				LOG.info("SEQUENCE ID EXIST");
+				qs = MS.getMCQs(MS.getLobbyQuestionCodeBySequenceId(question));
+			} else {
+				LOG.info("SEQUENCE ID NOT EXIST");
+				Set<Integer> questioncodes = MS.getAddedQuestionCode(question.getLobbyID());
 				qs = MS.getMCQs(questioncodes);
-				if (!lobbyQuestions.containsKey(question.getSequenceId())) {
-					lobbyQuestions.put(question.getSequenceId(), qs);
-				} else {
-					qs = lobbyQuestions.get(question.getSequenceId());
-				}
-				lobbyQuestionCode.get(question.getLobbyID()).add(qs.getCode());
+				question.setCode(qs.getCode());
+				MS.addNewQuestions(question);
 			}
-			MS.startGame(question.getLobbyID());
-			simpMessageSendingOperations.convertAndSendToUser(question.getUuid(), Constants.DESTINATION_LOBBY_QUESTIONS, qs);
+			LOG.info("MCQS: "+qs);
+			if (qs != null) {
+				MS.startGame(question.getLobbyID());
+				simpMessageSendingOperations.convertAndSendToUser(question.getUuid(),
+						Constants.DESTINATION_LOBBY_QUESTIONS, qs);
+			}
 		} catch (Exception e) {
 
 		}
 	}
 
-	@MessageMapping(value = Constants.PATH_GET_ANSWER_MESSAGE)
-	public void getAnswer(final @Payload Answer answer, SimpMessageHeaderAccessor sha,
-			@Header("simpSessionId") String sessionId) throws Exception {
-		LOG.info("ChatController.getAnswer()");
-		try {
-			if (answer != null && answer.getUsername() != null && answer.getLobbyID() != null) {
-				if (!lobbyAnswers.containsKey(answer.getLobbyID())) {
-					lobbyAnswers.put(answer.getLobbyID(), new HashSet<Answer>());
-				}
-				if (!lobbyAnswers.containsKey(answer.getLobbyID())) {
-					lobbyAnswers.get(answer.getLobbyID()).add(answer);
-					simpMessageSendingOperations.convertAndSendToUser(answer.getLobbyID(), Constants.DESTINATION_LOBBY_ANSWERS,
-							lobbyAnswers.get(answer.getLobbyID()));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	/*
+	 * @MessageMapping(value = Constants.PATH_GET_ANSWER_MESSAGE) public void
+	 * getAnswer(final @Payload Answer answer, SimpMessageHeaderAccessor sha,
+	 * 
+	 * @Header("simpSessionId") String sessionId) throws Exception {
+	 * LOG.info("ChatController.getAnswer()"); try { if (answer != null &&
+	 * answer.getUsername() != null && answer.getLobbyID() != null) { if
+	 * (!lobbyAnswers.containsKey(answer.getLobbyID())) {
+	 * lobbyAnswers.put(answer.getLobbyID(), new HashSet<Answer>()); } if
+	 * (!lobbyAnswers.containsKey(answer.getLobbyID())) {
+	 * lobbyAnswers.get(answer.getLobbyID()).add(answer);
+	 * simpMessageSendingOperations.convertAndSendToUser(answer.getLobbyID(),
+	 * Constants.DESTINATION_LOBBY_ANSWERS, lobbyAnswers.get(answer.getLobbyID()));
+	 * } } } catch (Exception e) { e.printStackTrace(); } }
+	 */
 }

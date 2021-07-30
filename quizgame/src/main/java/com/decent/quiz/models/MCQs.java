@@ -9,10 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MCQs {
 
-	private Integer code;
-	private String description;
 	private boolean display = false;
+
+	private Integer code;
+	
+	private String description;
 	private String response;
+	
 	private List<MCAs> answers;
 
 	public Integer getCode() {
