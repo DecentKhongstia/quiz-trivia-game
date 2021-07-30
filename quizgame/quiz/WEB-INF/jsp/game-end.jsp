@@ -17,12 +17,12 @@
 						<div ng-if="winner.length == 1">The winner is {{winner}}</div>
 					</div>
 					<div class="form-group row" ng-if="Results.winner != null">
-						<label class="col-sm-4 text-right">Slno</label>
+						<label class="col-sm-4 text-right">Rank</label>
 						<label class="col">Username</label>
 						<label class="col-sm-4">Score</label>
 					</div>
-					<div class="form-group row" ng-repeat="W in Results.winner| orderBy: {tally}">
-						<label class="col-sm-4 text-right">{{$index+1+' - '}}</label>
+					<div class="form-group row" ng-repeat="W in Results.winner| orderBy: {position}">
+						<label class="col-sm-4 text-right">{{W.position+' - '}}</label>
 						<label class="col">{{W.username}}</label>
 						<label class="col-sm-4 text-left">{{W.tally}}</label>
 					</div>
