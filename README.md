@@ -1,4 +1,5 @@
-# quiz-trivia-game
+# quiz-trivia-game (multiplayer)
+
 Steps to run the project after cloning.\
 1: Create db - name: quiz; user: postgres.\
   Database : name: quiz; user: postgres; password: postgres.\
